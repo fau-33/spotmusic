@@ -63,4 +63,18 @@ public class PlaylistController {
 
     return "redirect:/playlists/listar";
   }
+
+  // 5. NOVO: Exclui a playlist do banco de dados
+  @GetMapping("/{id}/remover")
+  public String remover(@PathVariable("id") long id, RedirectAttributes attr) {
+
+    // Manda o cozinheiro (Service) apagar do banco
+    playlistService.excluir(id);
+
+    // Coloca a mensagem vermelha de sucesso
+    attr.addFlashAttribute("mensagem", "Playlist excluída com sucesso!");
+
+    // Volta pra tela de listagem
+    return "redirect:/playlists/listar";
+  }
 }
