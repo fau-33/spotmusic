@@ -3,8 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>Spotmusic - Playlists</title>
-    <!-- CSS do Bootstrap -->
+    <title>Spotmusic - Músicas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body>
@@ -15,7 +14,7 @@
     </div>
 
     <div class="mb-3">
-        <a class="btn btn-primary" th:href="@{/playlists/cadastro}">Nova playlist</a>
+        <a class="btn btn-primary" th:href="@{/playlists/{playlistId}/musicas/cadastro(playlistId=${playlistId})}">Nova música</a>
     </div>
 
     <hr/>
@@ -26,32 +25,33 @@
         </div>
     </div>
 
-    <div th:if="${not #lists.isEmpty(playlists)}">
-        <h4>Playlists</h4>
+    <div th:if="${not #lists.isEmpty(musicas)}">
+        <h4>Músicas da Playlist</h4>
         <table class="table table-striped table-hover mt-3">
             <thead class="table-dark">
             <tr>
-                <th>Nome</th>
-                <th>Descrição</th>
+                <th>Título</th>
+                <th>Banda</th>
+                <th>Nota</th>
                 <th>Ação</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="playlist : ${playlists}">
+            <tr th:each="musica : ${musicas}">
+                <td th:text="${musica.titulo}">Título</td>
+                <td th:text="${musica.banda}">Banda</td>
+                <td th:text="${musica.nota}">Nota</td>
                 <td>
-                    <a th:href="@{/playlists/{id}/musicas/listar(id=${playlist.id})}" th:text="${playlist.nome}" class="text-decoration-none fw-bold">Nome</a>
-                </td>
-                <td th:text="${playlist.descricao}">Descrição</td>
-                <td>
-                    <a class="btn btn-sm btn-info" th:href="@{/playlists/{id}/atualizar(id=${playlist.id})}">Editar</a>
+                    <!-- BOTÃO EDITAR -->
+                    <a class="btn btn-sm btn-info" th:href="@{/playlists/{playlistId}/musicas/{musicaId}/atualizar(playlistId=${playlistId}, musicaId=${musica.id})}">Editar</a>
 
-                    <!-- BOTÃO QUE ABRE A MODAL CHIQUE -->
-                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" th:data-bs-target="'#modalExcluir' + ${playlist.id}">
+                    <!-- BOTÃO EXCLUIR (ABRE A MODAL) -->
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" th:data-bs-target="'#modalExcluirMusica' + ${musica.id}">
                         Excluir
                     </button>
 
-                    <!-- A JANELINHA FLUTUANTE (MODAL) DO BOOTSTRAP -->
-                    <div class="modal fade" th:id="'modalExcluir' + ${playlist.id}" tabindex="-1" aria-hidden="true">
+                    <!-- MODAL DE EXCLUSÃO DA MÚSICA -->
+                    <div class="modal fade" th:id="'modalExcluirMusica' + ${musica.id}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header bg-danger text-white">
@@ -59,38 +59,34 @@
                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    Tem certeza que deseja apagar a playlist <strong th:text="${playlist.nome}"></strong>? Essa ação não pode ser desfeita.
+                                    Tem certeza que deseja apagar a música <strong th:text="${musica.titulo}"></strong>?
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <a class="btn btn-danger" th:href="@{/playlists/{id}/remover(id=${playlist.id})}">Sim, apagar!</a>
+                                    <a class="btn btn-danger" th:href="@{/playlists/{playlistId}/musicas/{musicaId}/remover(playlistId=${playlistId}, musicaId=${musica.id})}">Sim, apagar!</a>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- FIM DA MODAL -->
-
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 
-    <div th:if="${#lists.isEmpty(playlists)}">
+    <div th:if="${#lists.isEmpty(musicas)}">
         <div class="alert alert-info" role="alert">
-            ⚠️ Nenhuma playlist cadastrada ainda!
+            ⚠️ Nenhuma música cadastrada nesta playlist!
         </div>
     </div>
 
     <hr/>
-    <a class="btn btn-secondary" href="/home">Voltar</a>
+    <a class="btn btn-secondary" th:href="@{/playlists/listar}">Voltar para Playlists</a>
 
     <footer class="footer mt-4 py-3">
         <p>&copy; 2026 Spotmusic Flávio Félix</p>
     </footer>
 </div>
-
-<!-- JS do Bootstrap (Necessário para a Modal funcionar) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
