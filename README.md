@@ -8,7 +8,7 @@
 
 Aplicação Web Full Stack desenvolvida para gerenciar Playlists e Músicas. Este projeto foi construído para aplicar conceitos sólidos de desenvolvimento back-end com Java e Spring Framework, incluindo persistência de dados, roteamento MVC e deploy na nuvem.
 
-🔗 **Acesse a aplicação rodando ao vivo:** [Spotmusic na Nuvem](https://spotmusic-flavio.onrender.com/)
+🔗 **Acesse a aplicação rodando ao vivo:** [Spotmusic na Nuvem](https://spotmusic-oficial.onrender.com/)
 
 ## 🚀 Funcionalidades
 
