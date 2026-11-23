@@ -5,10 +5,12 @@ import br.com.flaviofelix.spotmusic.domain.Playlist;
 import br.com.flaviofelix.spotmusic.repository.MusicaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class MusicaService {
 
   @Autowired
@@ -45,5 +47,48 @@ public class MusicaService {
     if (musica != null) {
       musicaRepository.delete(musica);
     }
+  }
+
+  @Transactional(readOnly = true)
+  public List<Musica> recuperarTodas() {
+    return musicaRepository.findAll();
+  }
+
+  @Transactional(readOnly = true)
+  public Musica recuperarPorId(long id) {
+    return musicaRepository.findById(id).orElse(null);
+  }
+
+  public Musica salvarERetornar(Musica musica, long playlistId) {
+    Playlist playlist = playlistService.recuperarPorId(playlistId);
+    if (playlist == null) {
+      return null;
+    }
+    musica.setPlaylist(playlist);
+    return musicaRepository.save(musica);
+  }
+
+  public Musica atualizarERetornar(long id, Musica dadosAtualizados, long playlistId) {
+    Musica existente = musicaRepository.findById(id).orElse(null);
+    if (existente == null) {
+      return null;
+    }
+    Playlist playlist = playlistService.recuperarPorId(playlistId);
+    if (playlist == null) {
+      return null;
+    }
+    existente.setTitulo(dadosAtualizados.getTitulo());
+    existente.setBanda(dadosAtualizados.getBanda());
+    existente.setNota(dadosAtualizados.getNota());
+    existente.setPlaylist(playlist);
+    return musicaRepository.save(existente);
+  }
+
+  public boolean excluirPorId(long id) {
+    if (!musicaRepository.existsById(id)) {
+      return false;
+    }
+    musicaRepository.deleteById(id);
+    return true;
   }
 }

@@ -20,6 +20,10 @@ public class PlaylistService {
     playlistRepository.save(playlist);
   }
 
+  public Playlist salvarERetornar(Playlist playlist) {
+    return playlistRepository.save(playlist);
+  }
+
   @Transactional(readOnly = true)
   public List<Playlist> recuperar() {
     // findAll() busca todas as playlists no banco
