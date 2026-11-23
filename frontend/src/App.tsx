@@ -76,6 +76,7 @@ export function App() {
     setInitialLoading(true);
     setConnectionError(null);
     try {
+      await api.health();
       const [playlistsData, musicasData] = await Promise.all([
         api.playlists.listar(),
         api.musicas.listar(null),
@@ -427,6 +428,26 @@ export function App() {
                 <p className="mt-3 text-sm font-medium text-zinc-300">
                   Carregando músicas...
                 </p>
+              </div>
+            ) : connectionError && filteredMusicas.length === 0 ? (
+              <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-rose-500/30 bg-rose-500/5 px-6 py-16 text-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500/15 text-rose-400">
+                  <AlertCircle className="h-6 w-6" />
+                </div>
+                <h3 className="mt-4 text-base font-semibold text-white">
+                  Não foi possível carregar a biblioteca
+                </h3>
+                <p className="mt-1 max-w-md text-sm text-zinc-400">
+                  {connectionError}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => void loadInitialData()}
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-rose-500/20 px-5 py-2 text-sm font-semibold text-rose-100 ring-1 ring-rose-500/40 hover:bg-rose-500/30"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                  Tentar novamente
+                </button>
               </div>
             ) : filteredMusicas.length === 0 ? (
               <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/30 px-6 py-16 text-center">

@@ -21,7 +21,7 @@ public class CorsConfig implements WebMvcConfigurer {
 
     if (frontendUrl != null && !frontendUrl.isBlank()) {
       for (String url : frontendUrl.split(",")) {
-        String trimmed = url.trim();
+        String trimmed = url.trim().replaceAll("/+$", "");
         if (!trimmed.isEmpty() && !origins.contains(trimmed)) {
           origins.add(trimmed);
         }

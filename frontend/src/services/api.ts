@@ -7,6 +7,7 @@ import type {
 } from '../types/spotmusic';
 
 const DEFAULT_API_URL = 'https://spotmusic-oficial.onrender.com';
+const REQUEST_TIMEOUT_MS = 35000;
 
 export const API_BASE_URL = (
   import.meta.env.VITE_API_URL?.trim() || DEFAULT_API_URL
@@ -32,14 +33,29 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     headers.set('Content-Type', 'application/json');
   }
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
   let response: Response;
   try {
-    response = await fetch(url, { ...options, headers });
-  } catch {
+    response = await fetch(url, {
+      ...options,
+      headers,
+      signal: options.signal ?? controller.signal,
+    });
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new ApiError(
+        'Tempo limite esgotado ao conectar ao servidor. O backend no Render pode estar indisponível ou demorando para iniciar.',
+        0,
+      );
+    }
     throw new ApiError(
       'Não foi possível conectar ao servidor. Verifique sua conexão ou aguarde o servidor iniciar.',
       0,
     );
+  } finally {
+    clearTimeout(timeoutId);
   }
 
   if (!response.ok) {
@@ -62,7 +78,14 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     return undefined as T;
   }
 
-  return (await response.json()) as T;
+  try {
+    return (await response.json()) as T;
+  } catch {
+    throw new ApiError(
+      'Resposta inválida recebida do servidor.',
+      response.status,
+    );
+  }
 }
 
 export const api = {
