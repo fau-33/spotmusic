@@ -6,7 +6,7 @@ import type {
   PlaylistInput,
 } from '../types/spotmusic';
 
-const DEFAULT_API_URL = 'https://spotmusic-oficial.onrender.com';
+const DEFAULT_API_URL = 'https://spotmusic-ysan.onrender.com';
 const REQUEST_TIMEOUT_MS = 35000;
 
 export const API_BASE_URL = (
