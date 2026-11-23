@@ -8,4 +8,4 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/target/*.jar spotmusic.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "spotmusic.jar"]
+ENTRYPOINT ["java", "-Xms128m", "-Xmx256m", "-XX:MaxMetaspaceSize=128m", "-XX:+UseSerialGC", "-XX:TieredStopAtLevel=1", "-jar", "spotmusic.jar"]
